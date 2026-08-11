@@ -1,0 +1,104 @@
+# ============================================================================
+# HUMMUSHEIKHS VENTURES — Decap CMS configuration
+#
+# The "backend:" block below is a PLACEHOLDER. Follow the setup steps in
+# CONTENT-GUIDE.md to get your real backend block from DecapBridge, then
+# replace the block below with it. Nothing else in this file needs to change.
+# ============================================================================
+
+backend:
+  name: git-gateway   # <-- REPLACE THIS WHOLE "backend:" BLOCK with the one
+  branch: main        #     DecapBridge generates for you. See CONTENT-GUIDE.md.
+
+media_folder: "assets/img"
+public_folder: "/assets/img"
+
+site_url: https://hummusheikhsventures.netlify.app
+display_url: https://hummusheikhsventures.netlify.app
+logo_url: /assets/img/logo-hummusheikhs-ventures.jpg
+
+collections:
+
+  # ---------------------------------------------------------------- BUSINESS INFO
+  - name: "site"
+    label: "Business Info"
+    files:
+      - name: "site"
+        label: "Business Details"
+        file: "content/site.json"
+        fields:
+          - { label: "Business Name", name: "biz", widget: "string" }
+          - { label: "Slogan / Tagline", name: "tagline", widget: "string" }
+          - { label: "Author / Founder Name", name: "author", widget: "string" }
+          - { label: "Contact Email", name: "email", widget: "string" }
+          - { label: "WhatsApp Link (wa.me/...)", name: "whatsapp_url", widget: "string" }
+          - { label: "WhatsApp Display Number", name: "whatsapp_display", widget: "string" }
+          - { label: "Live Website Address", name: "site_url", widget: "string", hint: "Do not add a trailing slash." }
+          - { label: "Logo", name: "logo", widget: "image" }
+          - { label: "Author Photo", name: "author_photo", widget: "image" }
+
+  # ---------------------------------------------------------------- BOOKS
+  - name: "books"
+    label: "Books"
+    folder: "content/books"
+    create: true
+    slug: "{{fields.slug}}"
+    identifier_field: "title"
+    fields:
+      - { label: "Internal ID (do not change after first save)", name: "slug", widget: "string", hint: "Lowercase, words separated by hyphens, e.g. my-new-book. This becomes the book's web address, so avoid changing it once the book is published." }
+      - { label: "Display Order", name: "order", widget: "number", hint: "Lower numbers show first. Use 1, 2, 3... to set the order books appear in." }
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Subtitle", name: "short", widget: "string" }
+      - { label: "Category Label", name: "category", widget: "string", default: "Books & Publishing" }
+      - { label: "Filter Tags", name: "cats", widget: "string", hint: "Lowercase words separated by spaces, e.g. \"books wealth\". Used for search/filter on the Bookshelf page." }
+      - { label: "Cover Image", name: "cover", widget: "image" }
+      - { label: "Short Excerpt (shown on book cards)", name: "excerpt", widget: "text" }
+      - label: "Full Description"
+        name: "description"
+        widget: "list"
+        field: { label: "Paragraph", name: "paragraph", widget: "text" }
+      - label: "What's Inside (features)"
+        name: "features"
+        widget: "list"
+        field: { label: "Feature", name: "item", widget: "string" }
+      - label: "Why Readers Choose This Book (benefits)"
+        name: "benefits"
+        widget: "list"
+        field: { label: "Benefit", name: "item", widget: "string" }
+      - { label: "Buy Now Link (Selar or other checkout)", name: "selar", widget: "string" }
+
+  # ---------------------------------------------------------------- FAQS
+  - name: "faqs"
+    label: "FAQ"
+    files:
+      - name: "faqs"
+        label: "Frequently Asked Questions"
+        file: "content/faqs.json"
+        fields:
+          - label: "Questions"
+            name: "faqs"
+            widget: "list"
+            summary: "{{question}}"
+            fields:
+              - { label: "Question", name: "question", widget: "string" }
+              - { label: "Answer", name: "answer", widget: "text" }
+
+  # ---------------------------------------------------------------- VENTURES
+  - name: "ventures"
+    label: "Our Ventures"
+    files:
+      - name: "ventures"
+        label: "Ventures List"
+        file: "content/ventures.json"
+        fields:
+          - label: "Ventures"
+            name: "ventures"
+            widget: "list"
+            summary: "{{name}} ({{status}})"
+            fields:
+              - { label: "Name", name: "name", widget: "string" }
+              - { label: "Status Label", name: "status", widget: "string", hint: "e.g. Active, Coming Soon, Reserved" }
+              - { label: "Currently Active?", name: "active", widget: "boolean" }
+              - { label: "Description", name: "desc", widget: "text" }
+              - { label: "Icon (emoji or HTML entity)", name: "icon", widget: "string", hint: "Leave as-is unless you know what this does." }
+              - { label: "Link (leave blank if not active)", name: "link", widget: "string", required: false }

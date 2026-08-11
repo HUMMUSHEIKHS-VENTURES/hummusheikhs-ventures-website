@@ -1,0 +1,21 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() { return request.auth != null; }
+
+    match /entitlements/{email} {
+      // Users can only read their own entitlement document
+      allow get: if isSignedIn() && request.auth.token.email_verified == true && request.auth.token.email == email;
+      // List operations are denied entirely to prevent scraping
+      allow list: if false;
+      // Writes are strictly denied to clients. Only the backend Admin SDK can write.
+      allow write: if false;
+    }
+  }
+}

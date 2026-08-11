@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Website Maintenance Agreement | Hummusheikhs Ventures</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { brand: { 900: '#0F172A' } }, fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['Playfair Display', 'serif'] } } }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    @page { size: A4; margin: 0; }
+    body { font-family: 'Inter', sans-serif; background: #f1f5f9; -webkit-print-color-adjust: exact; color-adjust: exact; }
+    .a4-container { max-width: 900px; width: 100%;  margin: 80px auto; background: white; padding: 40px 24px; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); position: relative; }
+    @media print { body { background: white; margin: 0; } .a4-container { margin: 0; box-shadow: none; padding: 15mm; width: 100%; min-height: auto; } .no-print { display: none !important; } input, textarea { border: none !important; background: transparent; resize: none; border-bottom: 1px dashed #cbd5e1 !important; padding: 0 !important; font-family: 'Inter', sans-serif;} }
+    input[type="text"] { width: 100%; border: none; border-bottom: 1px dashed #cbd5e1; background: transparent; padding: 4px 0; outline: none; font-size: 1.05rem; }
+  </style>
+</head>
+<body class="text-slate-800">
+  <div class="fixed top-4 right-4 no-print flex gap-4">
+    <a href="onboarding.html" class="bg-white text-slate-800 px-4 py-2 border border-slate-300 rounded shadow-sm hover:bg-slate-50 transition text-sm font-medium">← Back to Hub</a>
+    <button onclick="window.print()" class="bg-brand-900 text-white px-4 py-2 rounded shadow-sm hover:bg-slate-800 transition text-sm font-medium">Download / Print PDF</button>
+  </div>
+
+  <div class="a4-container">
+    <header class="flex justify-between items-start border-b-2 border-brand-900 pb-6 mb-8">
+      <div class="flex items-center gap-4">
+        <img src="assets/img/logo-hummusheikhs-ventures.jpg" alt="Logo" class="w-16 h-16 object-contain rounded-sm" onerror="this.style.display='none'">
+        <div>
+          <h1 class="font-serif text-2xl font-bold text-brand-900 tracking-tight uppercase">Hummusheikhs Ventures</h1>
+          <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-wider font-semibold">Building Ideas. Creating Value. Inspiring Business Growth.</p>
+        </div>
+      </div>
+      <div class="text-right text-[10px] text-slate-600 space-y-1">
+        <p><strong>E:</strong> humusheiksventures@gmail.com</p>
+        <p><strong>W:</strong> +234 803 950 6249</p>
+        <p><strong>URL:</strong> hummusheikhsventures.netlify.app</p>
+      </div>
+    </header>
+
+    <h2 class="text-xl font-bold text-brand-900 mb-6 uppercase tracking-wider">Website Maintenance Agreement</h2>
+    
+    <div class="text-[11px] leading-relaxed text-slate-700 space-y-5 mb-8">
+      <p>This Website Maintenance Agreement is designed to keep your website secure, updated, and performing optimally after launch. It is entered into by <strong>HUMMUSHEIKHS VENTURES</strong> ("Agency") and the undersigned ("Client").</p>
+
+      <div>
+        <h3 class="font-bold text-slate-900 uppercase tracking-wider mb-1">1. Monthly Maintenance Scope</h3>
+        <p>The Agency will perform ongoing checks and updates to ensure the website remains online, functional, and secure against emerging threats.</p>
+      </div>
+
+      <div>
+        <h3 class="font-bold text-slate-900 uppercase tracking-wider mb-1">2. Security Updates & Backups</h3>
+        <p>The Agency will implement critical security patches and perform regular automated backups to safeguard website data. In the event of a crash or error, the site will be restored from the latest functional backup.</p>
+      </div>
+
+      <div>
+        <h3 class="font-bold text-slate-900 uppercase tracking-wider mb-1">3. Content Updates</h3>
+        <p>This agreement includes up to two (2) hours of minor content updates per month (e.g., text changes, image swaps, or blog posting). Structural redesigns or new feature additions are outside this scope and billed separately.</p>
+      </div>
+
+      <div>
+        <h3 class="font-bold text-slate-900 uppercase tracking-wider mb-1">4. Technical Support</h3>
+        <p>The Client will receive priority email and WhatsApp support for technical issues during standard business hours. Response time is guaranteed within 24-48 hours.</p>
+      </div>
+
+      <div>
+        <h3 class="font-bold text-slate-900 uppercase tracking-wider mb-1">5. Pricing & Payment Section</h3>
+        <p class="mb-3">The standard maintenance fee is billed per the agreed schedule. Payments are to be made to: <strong>Adetoro Sururat Olatayo, GTBank, 0012731393</strong>.</p>
+        <div class="flex items-end gap-4 max-w-xs">
+          <label class="text-[10px] font-bold text-slate-800 uppercase tracking-wider shrink-0 mb-1">Agreed Amount:</label>
+          <input type="text" placeholder="Enter amount & schedule..." />
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-bold text-slate-900 uppercase tracking-wider mb-1">6. Renewal & Cancellation Terms</h3>
+        <p>This agreement automatically renews at the end of each billing cycle unless cancelled by the Client with a 30-day written notice. The Agency reserves the right to suspend maintenance services if payment is more than 7 days overdue.</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-12 mt-16">
+      <div>
+        <p class="text-[11px] font-bold text-slate-900 uppercase tracking-wider mb-8">For Hummusheikhs Ventures:</p>
+        <div class="border-b border-slate-400 mb-2 h-6"></div>
+        <p class="text-[10px] text-slate-500">Authorized Signature & Date</p>
+      </div>
+      <div>
+        <p class="text-[11px] font-bold text-slate-900 uppercase tracking-wider mb-8">For The Client:</p>
+        <div class="border-b border-slate-400 mb-2 h-6"></div>
+        <p class="text-[10px] text-slate-500">Authorized Signature & Date</p>
+      </div>
+    </div>
+
+    <footer class="mt-8 pt-6 border-t border-slate-200 text-[9px] text-slate-400 text-center uppercase tracking-wider absolute bottom-[20mm] left-[20mm] right-[20mm]">
+      HUMMUSHEIKHS VENTURES &bull; Bank: Adetoro Sururat Olatayo GTBank 0012731393
+    </footer>
+  </div>
+</body>
+</html>

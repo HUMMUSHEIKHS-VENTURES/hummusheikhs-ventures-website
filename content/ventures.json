@@ -1,0 +1,44 @@
+{
+  "ventures": [
+    {
+      "name": "Books & Publishing",
+      "status": "Active",
+      "active": true,
+      "desc": "Practical, well-researched ebooks across wealth, health, lifestyle, and entertainment, written to educate, empower, and entertain.",
+      "icon": "&#128214;",
+      "link": "books.html"
+    },
+    {
+      "name": "Premium Web Design",
+      "status": "Active",
+      "active": true,
+      "desc": "Professional, mobile-friendly websites designed to grow your brand and business.",
+      "icon": "&#128187;",
+      "link": "onboarding.html"
+    },
+    {
+      "name": "TRUEPROFIT\u2122",
+      "status": "Active",
+      "active": true,
+      "desc": "The Real Price Calculator. Understand your real costs, selling prices, and actual profits.",
+      "icon": "&#128176;",
+      "link": "trueprofit.html"
+    },
+    {
+      "name": "Products",
+      "status": "Coming Soon",
+      "active": false,
+      "desc": "Physical and digital products that extend the HUMMUSHEIKHS VENTURES mission beyond publishing.",
+      "icon": "&#128230;",
+      "link": ""
+    },
+    {
+      "name": "Future Ventures",
+      "status": "Reserved",
+      "active": false,
+      "desc": "This space is reserved for whatever lawful venture comes next.",
+      "icon": "&#10024;",
+      "link": ""
+    }
+  ]
+}

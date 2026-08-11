@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#202a24">
+<title>TRUEPROFIT™ — The Real Price Calculator</title>
+<style>
+:root{--ink:#202a24;--gold:#b08d2c;--cream:#f7f4ec;--card:#fff;--muted:#68716b;--line:#e2e5e0;--green:#176b45;--red:#b42318;--soft:#eef3ee}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,sans-serif}.app{max-width:620px;margin:auto;min-height:100vh;padding-bottom:85px}
+header{padding:21px 17px 8px}.brand{font-size:24px;font-weight:900}.brand span{color:var(--gold)}.tag{font-size:13px;color:var(--muted);margin-top:3px}
+.screen{display:none;padding:10px 16px}.screen.active{display:block}.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:17px;margin:12px 0;box-shadow:0 8px 28px #202a2412}.hero{background:var(--ink);color:#fff}.hero .muted{color:#d2d8d3}
+h1{font-size:29px;line-height:1.08;margin:9px 0}h2{font-size:19px;margin:0 0 11px}h3{font-size:15px;margin:0 0 7px}p{line-height:1.48}.muted{color:var(--muted)}.small{font-size:12px}
+button,input,select{font:inherit}button{cursor:pointer;border:0;border-radius:13px;padding:13px 15px;font-weight:750}.primary{width:100%;background:var(--ink);color:#fff;margin-top:14px}.gold{background:var(--gold);color:#fff}.secondary{background:#ece9df;color:var(--ink)}.danger{background:#fcebea;color:var(--red)}
+label{display:block;font-size:13px;font-weight:750;margin:13px 0 6px}input,select{width:100%;padding:13px 12px;border:1px solid #cfd5d0;border-radius:12px;background:#fff;color:var(--ink);font-size:16px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.result{background:#f6f8f5;border:1px solid #dce5dd;border-radius:15px;padding:13px}.result .label{font-size:11px;color:var(--muted);font-weight:750}.result .value{font-size:19px;font-weight:900;margin-top:3px}
+.costline{display:grid;grid-template-columns:1fr 135px;gap:9px;align-items:center}.costline label{margin:8px 0}.notice{font-size:12px;padding:11px 12px;border-radius:12px;background:#fff7dc;color:#675116;margin-top:11px}.good{color:var(--green);font-weight:800}.bad{color:var(--red);font-weight:800}.hidden{display:none!important}.empty{padding:18px;text-align:center;color:var(--muted);border:1px dashed #cfd5d0;border-radius:14px}
+.nav{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line)}.navin{max-width:620px;margin:auto;display:grid;grid-template-columns:repeat(6,1fr)}.nav button{background:#fff;border-radius:0;padding:9px 1px;color:var(--muted);font-size:10px}.nav button.active{color:var(--ink);font-weight:900}
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:13px}.table{width:100%;border-collapse:collapse;font-size:12px;min-width:540px}.table th,.table td{padding:9px;border-bottom:1px solid var(--line);text-align:left}.table th{background:#f6f7f4}.divider{height:1px;background:var(--line);margin:15px 0}.badge{display:inline-block;padding:5px 8px;border-radius:99px;background:var(--soft);color:var(--green);font-size:11px;font-weight:800}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="brand">TRUE<span>PROFIT™</span></div><div class="tag">The Real Price Calculator · Know your cost. Know your price. Know your profit.</div></header>
+
+<main id="home" class="screen active">
+<div class="card hero"><span class="badge">Built to grow with your business</span><h1>Do you really know how much you're making?</h1><p>Whether you produce, resell, provide services, or do both, TRUEPROFIT helps you see the money clearly.</p><button class="gold" onclick="show('quick')">Start a calculation</button></div>
+<div class="card"><h2>Your business at a glance</h2><div class="grid">
+<div class="result"><div class="label">PRODUCTS</div><div class="value" id="dashProducts">0</div></div>
+<div class="result"><div class="label">SALES</div><div class="value" id="dashSales">0</div></div>
+<div class="result"><div class="label">REVENUE</div><div class="value" id="dashRevenue">₦0</div></div>
+<div class="result"><div class="label">PROFIT</div><div class="value" id="dashProfit">₦0</div></div></div></div>
+<div class="card"><h2>One problem. One place.</h2><p>Purchase costs, production costs, labour, transport, packaging, energy, fees, wastage and other expenses can quietly eat into profit. TRUEPROFIT brings the relevant ones together.</p></div>
+</main>
+
+<main id="quick" class="screen">
+<div class="row"><button class="secondary" onclick="show('home')">← Home</button><span class="small muted">Quick Calculate</span></div>
+<div class="card"><h2>1. What are you selling?</h2>
+<label>Business type</label><select id="bizType"><option>Buy & resell</option><option>Produce / make</option><option>Provide a service</option><option>Both buy & produce</option><option>Other</option></select>
+<label>What are you selling?</label><input id="qProduct" placeholder="e.g. provisions, dress, repair service">
+<label>Quantity</label><input id="qQty" type="number" min="1" value="1"></div>
+<div class="card"><h2>2. Your real cost</h2><p class="small muted">Only enter what applies. Leave everything else at 0.</p><div id="qCosts"></div>
+<label>Target profit margin (%)</label><input id="qMargin" type="number" min="0" max="90" value="30">
+<button class="primary" onclick="runQuick(true)">Calculate & save</button><button class="secondary" style="width:100%;margin-top:8px" onclick="runQuick(false)">Calculate without saving</button></div>
+</main>
+
+<main id="qresult" class="screen">
+<div class="row"><button class="secondary" onclick="show('quick')">← Edit</button><button class="secondary" onclick="show('home')">Home</button></div>
+<div class="card hero"><div class="muted" id="qrName"></div><h1 id="qrCost">₦0</h1><p>Real cost per unit.</p></div>
+<div class="grid"><div class="result"><div class="label">COST TOTAL</div><div class="value" id="qrTotal">₦0</div></div><div class="result"><div class="label">COST / UNIT</div><div class="value" id="qrUnit">₦0</div></div><div class="result"><div class="label">TARGET PRICE</div><div class="value" id="qrPrice">₦0</div></div><div class="result"><div class="label">PROFIT / UNIT</div><div class="value" id="qrProfit">₦0</div></div></div>
+<div class="card"><h2>What this means</h2><p id="qrExplain"></p><button class="primary" onclick="openDiscountFromResult()">Check a discount</button></div>
+</main>
+
+<main id="product" class="screen"><div class="row"><button class="secondary" onclick="show('products')">← Products</button></div>
+<div class="card"><h2>Build a reusable cost profile</h2><label>Name</label><input id="pName" placeholder="e.g. Custom Dress">
+<label>Type</label><select id="pType"><option>Buy & resell</option><option>Produce / make</option><option>Provide a service</option><option>Both buy & produce</option><option>Other</option></select>
+<div id="pCosts"></div><label>Target profit margin (%)</label><input id="pMargin" type="number" min="0" max="90" value="30"><button class="primary" onclick="saveProduct()">Save product</button></div></main>
+
+<main id="products" class="screen"><div class="row"><h2>Products & services</h2><button class="gold" onclick="show('product')">+ New</button></div><div id="productList"></div></main>
+
+<main id="discount" class="screen"><div class="row"><button class="secondary" onclick="show('qresult')">← Back</button></div>
+<div class="card"><h2>Discount safety</h2><label>Original selling price / unit</label><input id="dOriginal" type="number" min="0"><label>Discount (%)</label><input id="dPct" type="number" min="0" max="100" value="10"><button class="primary" onclick="calcDiscount()">Check</button></div><div id="dOut" class="card hidden"></div></main>
+
+<main id="sales" class="screen"><div class="row"><h2>Sales & profit</h2><button class="gold" onclick="show('logsale')">+ Sale</button></div>
+<div class="card"><div class="grid"><div class="result"><div class="label">REVENUE</div><div class="value" id="sRevenue">₦0</div></div><div class="result"><div class="label">PROFIT</div><div class="value" id="sProfit">₦0</div></div><div class="result"><div class="label">MARGIN</div><div class="value" id="sMargin">0%</div></div><div class="result"><div class="label">TRANSACTIONS</div><div class="value" id="sCount">0</div></div></div></div><div id="salesList"></div></main>
+
+<main id="logsale" class="screen"><div class="row"><button class="secondary" onclick="show('sales')">← Back</button></div>
+<div class="card"><h2>Record a sale</h2><label>Date</label><input id="sDate" type="date"><label>Product / service</label><select id="sProduct"></select><label>Quantity</label><input id="sQty" type="number" min="1" value="1"><label>Selling price / unit</label><input id="sPrice" type="number" min="0"><label>Actual cost / unit</label><input id="sCost" type="number" min="0"><button class="primary" onclick="saveSale()">Save sale</button></div></main>
+
+<main id="analysis" class="screen">
+<div class="card"><h2>Business analysis</h2><div class="grid"><div class="result"><div class="label">TOTAL REVENUE</div><div class="value" id="aRevenue">₦0</div></div><div class="result"><div class="label">TOTAL PROFIT</div><div class="value" id="aProfit">₦0</div></div><div class="result"><div class="label">AVG MARGIN</div><div class="value" id="aMargin">0%</div></div><div class="result"><div class="label">BEST PRODUCT</div><div class="value" id="aBest">—</div></div></div></div>
+<div class="card"><h2>What-if: cost changes</h2><label>Current cost / unit</label><input id="wCost" type="number" min="0"><label>Cost change (%)</label><input id="wIncrease" type="number" value="10"><label>Current selling price / unit</label><input id="wPrice" type="number" min="0"><button class="primary" onclick="whatIf()">Show impact</button><div id="wOut" class="hidden" style="margin-top:12px"></div></div>
+<div class="card"><h2>Break-even</h2><label>Fixed costs</label><input id="bFixed" type="number" min="0"><label>Contribution profit / unit</label><input id="bContribution" type="number" min="0"><button class="primary" onclick="breakEven()">Calculate break-even</button><div id="bOut" class="hidden" style="margin-top:12px"></div></div>
+</main>
+
+<main id="about" class="screen"><div class="card"><span class="badge">TRUEPROFIT™</span><h2 style="margin-top:10px">The Real Price Calculator</h2>
+<p>Built around one universal business question:</p><h2>“I'm selling things — do I actually know how much I'm making?”</h2>
+<p>Designed for businesses that buy and resell, produce, provide services, or combine these activities.</p><div class="divider"></div><p><b>Simple first.</b> Quick Calculate works without forcing advanced features.</p><p><b>Power when needed.</b> Products, sales, discounts, what-if analysis and break-even tools support growth.</p><div class="notice">TRUEPROFIT is decision support, not a promise of a magical perfect market price. Demand, competition, taxes and customer value still matter.</div><div class="divider"></div>
+<p class="small muted">TRUEPROFIT™ — The Real Price Calculator</p><p class="small muted">A product of Hummusheikhs Ventures.</p><p class="small muted">© 2026 Hummusheikhs Ventures. All rights reserved.</p></div></main>
+
+<footer style="text-align:center;padding:15px;color:#68716b;font-size:11px">© 2026 Hummusheikhs Ventures · TRUEPROFIT™ · All rights reserved.</footer>
+<nav class="nav"><div class="navin"><button id="nav-home" onclick="show('home')">⌂<br>Home</button><button id="nav-quick" onclick="show('quick')">＋<br>Quick</button><button id="nav-products" onclick="show('products')">▣<br>Products</button><button id="nav-sales" onclick="show('sales')">₦<br>Sales</button><button id="nav-analysis" onclick="show('analysis')">◫<br>Analysis</button><button id="nav-about" onclick="show('about')">ⓘ<br>About</button></div></nav>
+</div>
+<script>
+const COSTS=["Purchase / stock / materials","Labour / your time","Transport","Packaging","Electricity / fuel / gas","Delivery / platform / transaction fees","Wastage / spoilage","Other direct costs"];
+function fields(prefix){return COSTS.map(x=>'<div class="costline"><label>'+x+'</label><input data-'+prefix+' type="number" min="0" step="0.01" value="0"></div>').join("")}
+qCosts.innerHTML=fields("q");pCosts.innerHTML=fields("p");
+const money=n=>new Intl.NumberFormat("en-NG",{style:"currency",currency:"NGN",maximumFractionDigits:0}).format(Number(n)||0);
+const num=id=>Math.max(0,Number(document.getElementById(id).value)||0);
+const read=(k,f=[])=>{try{return JSON.parse(localStorage.getItem(k))??f}catch(e){return f}};
+const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+let current={unit:0,total:0,price:0,name:"Product",margin:.3};
+function show(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));document.getElementById("nav-"+id)?.classList.add("active");if(id==="home")dashboard();if(id==="products")renderProducts();if(id==="sales")renderSales();if(id==="logsale")prepareSale();if(id==="analysis")renderAnalysis();scrollTo(0,0)}
+function totalCosts(prefix){return [...document.querySelectorAll("[data-"+prefix+"]")].reduce((a,x)=>a+Math.max(0,Number(x.value)||0),0)}
+function runQuick(save){const qty=Math.max(1,Math.floor(num("qQty"))),total=totalCosts("q"),unit=total/qty,margin=Math.min(.9,num("qMargin")/100),name=qProduct.value.trim()||"Product",price=margin>=.9?unit:unit/(1-margin);current={unit,total,price,name,margin};qrName.textContent=name+" · "+bizType.value;qrCost.textContent=money(unit);qrTotal.textContent=money(total);qrUnit.textContent=money(unit);qrPrice.textContent=money(price);qrProfit.textContent=money(price-unit);qrExplain.textContent="Your entered costs total "+money(total)+" for "+qty+" unit(s), giving a real cost of "+money(unit)+" per unit. A "+Math.round(margin*100)+"% target margin gives a suggested price of "+money(price)+" per unit.";dOriginal.value=Math.round(price);if(save){let p=read("tp_products");p.unshift({id:Date.now(),name,type:bizType.value,cost:unit,price,margin});write("tp_products",p)}show("qresult")}
+function saveProduct(){const name=pName.value.trim();if(!name){alert("Please enter a name.");return}const cost=totalCosts("p"),margin=Math.min(.9,num("pMargin")/100),price=margin>=.9?cost:cost/(1-margin);let p=read("tp_products");p.unshift({id:Date.now(),name,type:pType.value,cost,price,margin});write("tp_products",p);show("products")}
+function esc(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+function renderProducts(){const p=read("tp_products"),el=productList;if(!p.length){el.innerHTML='<div class="card empty">No saved products or services yet.</div>';return}el.innerHTML=p.map(x=>'<div class="card"><div class="row"><div><h3>'+esc(x.name)+'</h3><div class="small muted">'+esc(x.type)+' · Cost '+money(x.cost)+' · Target '+money(x.price)+'</div></div><button class="danger" onclick="delProduct('+x.id+')">Delete</button></div></div>').join("")}
+function delProduct(id){write("tp_products",read("tp_products").filter(x=>x.id!==id));renderProducts()}
+function openDiscountFromResult(){dOriginal.value=Math.round(current.price);show("discount")}
+function calcDiscount(){const original=num("dOriginal"),pct=Math.min(100,num("dPct")),sale=original*(1-pct/100),profit=sale-current.unit,margin=sale?profit/sale:0,ok=sale>=current.unit;dOut.classList.remove("hidden");dOut.innerHTML='<h2>Discount result</h2><div class="grid"><div class="result"><div class="label">NEW PRICE</div><div class="value">'+money(sale)+'</div></div><div class="result"><div class="label">PROFIT</div><div class="value">'+money(profit)+'</div></div><div class="result"><div class="label">MARGIN</div><div class="value">'+(margin*100).toFixed(1)+'%</div></div><div class="result"><div class="label">COST FLOOR</div><div class="value">'+money(current.unit)+'</div></div></div><p class="'+(ok?"good":"bad")+'">'+(ok?"✓ Still at or above your cost floor.":"⚠ Below your cost floor — this sale is losing money before other business expenses.")+'</p>'}
+function prepareSale(){const p=read("tp_products");sProduct.innerHTML=p.length?p.map(x=>'<option value="'+x.id+'">'+esc(x.name)+'</option>').join(""):'<option value="">Create a product first</option>';sDate.value=new Date().toISOString().slice(0,10);const fill=()=>{const x=p.find(y=>String(y.id)===sProduct.value);if(x){sCost.value=Math.round(x.cost);sPrice.value=Math.round(x.price)}};sProduct.onchange=fill;fill()}
+function saveSale(){const p=read("tp_products");if(!p.length){alert("Save a product first.");show("products");return}const name=sProduct.selectedOptions[0]?.textContent||"Product",qty=Math.max(1,Math.floor(num("sQty"))),price=num("sPrice"),cost=num("sCost"),sale={id:Date.now(),date:sDate.value,product:name,qty,price,cost,revenue:qty*price,totalCost:qty*cost,profit:qty*(price-cost)};sale.margin=sale.revenue?sale.profit/sale.revenue:0;let ss=read("tp_sales");ss.unshift(sale);write("tp_sales",ss);show("sales")}
+function renderSales(){const ss=read("tp_sales"),rev=ss.reduce((a,s)=>a+s.revenue,0),prof=ss.reduce((a,s)=>a+s.profit,0);sRevenue.textContent=money(rev);sProfit.textContent=money(prof);sMargin.textContent=(rev?prof/rev*100:0).toFixed(1)+"%";sCount.textContent=ss.length;if(!ss.length){salesList.innerHTML='<div class="card empty">No sales recorded yet.</div>';return}salesList.innerHTML='<div class="card"><div class="tablewrap"><table class="table"><tr><th>Date</th><th>Product</th><th>Qty</th><th>Revenue</th><th>Profit</th><th>Margin</th></tr>'+ss.map(s=>'<tr><td>'+esc(s.date)+'</td><td>'+esc(s.product)+'</td><td>'+s.qty+'</td><td>'+money(s.revenue)+'</td><td>'+money(s.profit)+'</td><td>'+(s.margin*100).toFixed(1)+'%</td></tr>').join("")+'</table></div></div>'}
+function renderAnalysis(){const ss=read("tp_sales"),rev=ss.reduce((a,s)=>a+s.revenue,0),prof=ss.reduce((a,s)=>a+s.profit,0),by={};ss.forEach(s=>by[s.product]=(by[s.product]||0)+s.profit);let best="—";Object.keys(by).forEach(k=>{if(best==="—"||by[k]>by[best])best=k});aRevenue.textContent=money(rev);aProfit.textContent=money(prof);aMargin.textContent=(rev?prof/rev*100:0).toFixed(1)+"%";aBest.textContent=best}
+function whatIf(){const cost=num("wCost"),inc=Number(wIncrease.value)||0,price=num("wPrice"),newCost=cost*(1+inc/100),profit=price-newCost;wOut.classList.remove("hidden");wOut.innerHTML='<div class="grid"><div class="result"><div class="label">NEW COST</div><div class="value">'+money(newCost)+'</div></div><div class="result"><div class="label">NEW PROFIT</div><div class="value">'+money(profit)+'</div></div></div><p class="'+(profit>=0?"good":"bad")+'">'+(profit>=0?"Still profitable at the same selling price.":"The new cost would push the sale below cost.")+'</p>'}
+function breakEven(){const fixed=num("bFixed"),contrib=num("bContribution");bOut.classList.remove("hidden");if(contrib<=0){bOut.innerHTML='<p class="bad">Contribution profit per unit must be greater than zero.</p>';return}const units=Math.ceil(fixed/contrib);bOut.innerHTML='<div class="result"><div class="label">BREAK-EVEN UNITS</div><div class="value">'+units.toLocaleString("en-NG")+'</div></div>'}
+function dashboard(){const p=read("tp_products"),s=read("tp_sales");dashProducts.textContent=p.length;dashSales.textContent=s.length;dashRevenue.textContent=money(s.reduce((a,x)=>a+x.revenue,0));dashProfit.textContent=money(s.reduce((a,x)=>a+x.profit,0))}
+dashboard();
+</script>
+
+</body>
+</html>

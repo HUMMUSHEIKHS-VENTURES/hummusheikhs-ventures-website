@@ -1,0 +1,38 @@
+{
+  "entities": {
+    "Entitlement": {
+      "title": "TRUEPROFIT Entitlement",
+      "description": "Represents a user's paid access entitlement to TRUEPROFIT",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "User's email address"
+        },
+        "active": {
+          "type": "boolean",
+          "description": "Whether the access is active"
+        },
+        "orderId": {
+          "type": "string",
+          "description": "The transaction reference ID from Selar"
+        },
+        "purchaseDate": {
+          "type": "timestamp",
+          "description": "When the purchase was made"
+        },
+        "product": {
+          "type": "string",
+          "description": "Product identifier"
+        }
+      },
+      "required": ["email", "active", "orderId", "purchaseDate", "product"]
+    }
+  },
+  "firestore": {
+    "entitlements/{email}": {
+      "schema": { "$ref": "#/entities/Entitlement" },
+      "description": "Store entitlements indexed by email address"
+    }
+  }
+}

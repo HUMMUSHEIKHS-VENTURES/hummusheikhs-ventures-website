@@ -1,0 +1,9 @@
+[build]
+  command = "python3 build.py"
+  publish = "."
+
+[build.environment]
+  PYTHON_VERSION = "3.11"
+
+# Netlify automatically serves 404.html for unmatched pages since it sits
+# at the root of the published site, no extra redirect rule needed.

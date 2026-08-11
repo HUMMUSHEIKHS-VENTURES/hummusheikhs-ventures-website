@@ -1,0 +1,36 @@
+{
+  "categories": [
+    {
+      "key": "all",
+      "label": "All Books"
+    },
+    {
+      "key": "books",
+      "label": "Books & Publishing"
+    },
+    {
+      "key": "education",
+      "label": "Education"
+    },
+    {
+      "key": "digital-services",
+      "label": "Digital Services"
+    },
+    {
+      "key": "wealth",
+      "label": "Wealth"
+    },
+    {
+      "key": "health",
+      "label": "Health"
+    },
+    {
+      "key": "lifestyle",
+      "label": "Lifestyle"
+    },
+    {
+      "key": "fiction",
+      "label": "Fiction & Drama"
+    }
+  ]
+}

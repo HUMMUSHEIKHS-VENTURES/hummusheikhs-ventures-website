@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Final Website Handover Checklist | Hummusheikhs Ventures</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { brand: { 900: '#0F172A' } }, fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['Playfair Display', 'serif'] } } }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    @page { size: A4; margin: 0; }
+    body { font-family: 'Inter', sans-serif; background: #f1f5f9; -webkit-print-color-adjust: exact; color-adjust: exact; }
+    .a4-container { max-width: 900px; width: 100%;  margin: 80px auto; background: white; padding: 40px 24px; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); position: relative; }
+    @media print { body { background: white; margin: 0; } .a4-container { margin: 0; box-shadow: none; padding: 15mm; width: 100%; min-height: auto; } .no-print { display: none !important; } }
+    .checkbox-label { display: flex; align-items: center; gap: 0.75rem; font-size: 1.05rem; color: #334155; margin-bottom: 0.75rem; }
+    input[type="checkbox"] { accent-color: #d4af37; width: 1.25rem; height: 1.25rem; border: 1px solid #cbd5e1; }
+  </style>
+</head>
+<body class="text-slate-800">
+  <div class="fixed top-4 right-4 no-print flex gap-4">
+    <a href="onboarding.html" class="bg-white text-slate-800 px-4 py-2 border border-slate-300 rounded shadow-sm hover:bg-slate-50 transition text-sm font-medium">← Back to Hub</a>
+    <button onclick="window.print()" class="bg-brand-900 text-white px-4 py-2 rounded shadow-sm hover:bg-slate-800 transition text-sm font-medium">Download / Print PDF</button>
+  </div>
+
+  <div class="a4-container">
+    <header class="flex justify-between items-start border-b-2 border-brand-900 pb-6 mb-8">
+      <div class="flex items-center gap-4">
+        <img src="assets/img/logo-hummusheikhs-ventures.jpg" alt="Logo" class="w-16 h-16 object-contain rounded-sm" onerror="this.style.display='none'">
+        <div>
+          <h1 class="font-serif text-2xl font-bold text-brand-900 tracking-tight uppercase">Hummusheikhs Ventures</h1>
+          <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-wider font-semibold">Building Ideas. Creating Value. Inspiring Business Growth.</p>
+        </div>
+      </div>
+      <div class="text-right text-[10px] text-slate-600 space-y-1">
+        <p><strong>E:</strong> humusheiksventures@gmail.com</p>
+        <p><strong>W:</strong> +234 803 950 6249</p>
+        <p><strong>URL:</strong> hummusheikhsventures.netlify.app</p>
+      </div>
+    </header>
+
+    <h2 class="text-xl font-bold text-brand-900 mb-4 uppercase tracking-wider">Final Website Handover Checklist</h2>
+    
+    <p class="text-[11px] text-slate-600 mb-8">This document verifies that all requested features, performance standards, and deliverables have been successfully deployed and handed over to the Client.</p>
+
+    <div class="space-y-4 mb-10 pl-2">
+      <label class="checkbox-label font-medium"><input type="checkbox"> Website design and development fully completed.</label>
+      <label class="checkbox-label font-medium"><input type="checkbox"> Mobile responsive testing passed across devices.</label>
+      <label class="checkbox-label font-medium"><input type="checkbox"> Custom domain successfully connected.</label>
+      <label class="checkbox-label font-medium"><input type="checkbox"> Secure hosting environment configured.</label>
+      <label class="checkbox-label font-medium"><input type="checkbox"> SSL Certificate (HTTPS) active and verified.</label>
+      <label class="checkbox-label font-medium"><input type="checkbox"> Contact forms and lead captures tested.</label>
+      <label class="checkbox-label font-medium"><input type="checkbox"> On-page SEO completed (Meta tags, keywords).</label>
+      <label class="checkbox-label font-medium"><input type="checkbox"> Google Search Console connected.</label>
+      <label class="checkbox-label font-medium"><input type="checkbox"> XML Sitemap submitted to search engines.</label>
+      <label class="checkbox-label font-medium"><input type="checkbox"> Web Analytics (e.g. Google Analytics) connected.</label>
+      <label class="checkbox-label font-medium"><input type="checkbox"> Admin/CMS access credentials delivered to Client.</label>
+      <label class="checkbox-label font-medium"><input type="checkbox"> Client dashboard training completed.</label>
+    </div>
+
+    <div class="bg-slate-50 border border-slate-200 p-5 rounded-sm mb-12">
+      <p class="text-[11px] leading-relaxed text-slate-700 italic">"By signing below, the Client confirms that they have received the website in full working order, alongside the necessary credentials and training. Any future changes beyond the scope of this project may require a separate maintenance agreement."</p>
+    </div>
+
+    <div class="grid grid-cols-2 gap-12 mt-16">
+      <div>
+        <p class="text-[11px] font-bold text-slate-900 uppercase tracking-wider mb-8">Project Manager (Agency):</p>
+        <div class="border-b border-slate-400 mb-2 h-6"></div>
+        <p class="text-[10px] text-slate-500">Authorized Signature & Date</p>
+      </div>
+      <div>
+        <p class="text-[11px] font-bold text-slate-900 uppercase tracking-wider mb-8">Client Approval:</p>
+        <div class="border-b border-slate-400 mb-2 h-6"></div>
+        <p class="text-[10px] text-slate-500">Authorized Signature & Date</p>
+      </div>
+    </div>
+
+    <footer class="mt-8 pt-6 border-t border-slate-200 text-[9px] text-slate-400 text-center uppercase tracking-wider absolute bottom-[20mm] left-[20mm] right-[20mm]">
+      HUMMUSHEIKHS VENTURES &bull; Bank: Adetoro Sururat Olatayo GTBank 0012731393
+    </footer>
+  </div>
+</body>
+</html>
