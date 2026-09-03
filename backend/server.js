@@ -220,9 +220,8 @@ app.get('/api/engine.js', async (req, res) => {
         const idToken = authHeader.split('Bearer ')[1];
         
         if (!db) {
-            console.warn('Bypassing auth for AI Studio preview due to missing DB config.');
-            res.setHeader('Content-Type', 'application/javascript');
-            return res.send(TRUEPROFIT_ENGINE_CODE);
+            console.error('TRUEPROFIT authorization unavailable: Firebase Admin/Firestore is not configured.');
+            return res.status(503).send('/* Service unavailable: authorization is not configured. */');
         }
 
         // Verify the Firebase ID token
