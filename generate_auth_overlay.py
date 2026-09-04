@@ -67,7 +67,7 @@ auth_overlay = """
 <script type="module">
   // IMPORT FIREBASE MODULES
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.1/firebase-app.js";
-  import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js";
+  import { getAuth, signInWithRedirect, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js";
 
   // TODO: Add your actual Firebase configuration here once the project is provisioned.
   // DO NOT COMMIT REAL CREDENTIALS TO GITHUB. USE ENVIRONMENT VARIABLES IN PRODUCTION.
@@ -109,7 +109,7 @@ auth_overlay = """
           loginBtn.style.display = 'none';
           loader.style.display = 'block';
           errorEl.style.display = 'none';
-          await signInWithPopup(auth, provider);
+          await signInWithRedirect(auth, provider);
       } catch (error) {
           showError("Authentication failed: " + error.message);
       }
