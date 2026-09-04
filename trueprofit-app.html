@@ -240,6 +240,50 @@ label{display:block;font-size:13px;font-weight:750;margin:13px 0 6px}input,selec
       });
   }
 </script>
+<script>
+  // Simple, bulletproof unlock for Admin and Customers
+  function unlockTrueProfit() {
+      // Find and hide any lock modal/overlay on the page
+      const overlays = document.querySelectorAll('#tp-auth-overlay, #auth-modal, .tp-auth-card, [id*="auth"]');
+      overlays.forEach(el => {
+          if (el.id === 'tp-auth-overlay' || el.id === 'auth-modal') {
+              el.style.display = 'none';
+          }
+      });
+      // Also hide the whole overlay wrapper
+      const mainOverlay = document.getElementById('tp-auth-overlay') || document.querySelector('[style*="z-index: 999999"]');
+      if (mainOverlay) mainOverlay.style.display = 'none';
+  }
 
+  // When clicking "Log In / Verify Access", prompt for email and unlock
+  document.addEventListener('DOMContentLoaded', () => {
+      // Check if user already unlocked on this device
+      if (localStorage.getItem('trueprofit_unlocked')) {
+          unlockTrueProfit();
+      }
+
+      // Hook up any login button
+      const loginBtns = document.querySelectorAll('#login-btn, .tp-btn-small, button');
+      loginBtns.forEach(btn => {
+          if (btn.textContent.includes('Log In') || btn.textContent.includes('Verify')) {
+              btn.onclick = function(e) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  const email = prompt("TRUEPROFIT™ VIP Access\n\nEnter your purchase or admin email:");
+                  if (email && email.includes('@')) {
+                      localStorage.setItem('trueprofit_unlocked', email);
+                      unlockTrueProfit();
+                      alert("Access Granted! Welcome to TRUEPROFIT™.");
+                  }
+              };
+          }
+      });
+  });
+
+  // Run immediately in case page is already loaded
+  if (localStorage.getItem('trueprofit_unlocked')) {
+      unlockTrueProfit();
+  }
+</script>
 </body>
 </html>
