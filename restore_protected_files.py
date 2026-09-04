@@ -25,7 +25,7 @@ PAYLOADS = (
 def decode_payload(payload):
     try:
         encoded = b"".join(payload.read_bytes().split())
-        compressed = base64.b64decode(encoded, validate=True)
+        compressed = base64.b64decode(encoded)
         return gzip.decompress(compressed)
     except (OSError, ValueError, binascii.Error, gzip.BadGzipFile) as exc:
         raise SystemExit(
