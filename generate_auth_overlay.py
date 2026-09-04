@@ -155,8 +155,14 @@ auth_overlay = """
       }
   }
 
-  // Monitor auth state
+// Monitor auth state
   if (auth) {
+      // CATCHER: Resolves the mobile redirect
+      getRedirectResult(auth).catch((error) => {
+          showError("Authentication failed: " + error.message);
+      });
+
+      // LISTENER: Handles user state
       onAuthStateChanged(auth, (user) => {
           if (user) {
               fetchEngine(user);
