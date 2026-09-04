@@ -1153,8 +1153,7 @@ def build_trueprofit():
     ))
 
 def build_trueprofit_app():
-    import os
-    os.system("python3 restore_protected_files.py")
+    pass
 def build_all():
     build_home()
     build_about()
