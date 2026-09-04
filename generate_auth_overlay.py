@@ -165,10 +165,20 @@ auth_overlay = """
       // LISTENER: Handles user state
       onAuthStateChanged(auth, (user) => {
           if (user) {
-              fetchEngine(user);
+              // Direct unlock: hides the lock modal and displays the user's email
+              const modal = document.getElementById('auth-modal');
+              if (modal) modal.style.display = 'none';
+              const badge = document.getElementById('user-badge');
+              if (badge) badge.textContent = user.email;
+              const loader = document.getElementById('auth-loader');
+              if (loader) loader.style.display = 'none';
           } else {
-              loginBtn.style.display = 'block';
-              loader.style.display = 'none';
+              const modal = document.getElementById('auth-modal');
+              if (modal) modal.style.display = 'flex';
+              const loginBtn = document.getElementById('login-btn');
+              if (loginBtn) loginBtn.style.display = 'block';
+              const loader = document.getElementById('auth-loader');
+              if (loader) loader.style.display = 'none';
           }
       });
   }
