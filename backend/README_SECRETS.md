@@ -23,6 +23,11 @@ To deploy this backend, you must configure the following environment variables (
 - `SELAR_BEARER_TOKEN`: Your Selar developer integration token. You can activate and find this in your Selar Supplier Settings under the API integration section. This is required for transaction verification.
 - `SELAR_TRUEPROFIT_PRODUCT_ID`: The internal ID of your TRUEPROFIT product on Selar (e.g. from the URL `https://selar.com/28o4b14m9g`, the code or specific product ID) to ensure the webhook is for the correct product.
 
+### 3. TRUEPROFIT administrator
+- `TRUEPROFIT_ADMIN_EMAIL`: The verified Firebase email address that should receive administrator access without a Firestore entitlement document. Keep this set explicitly in the production secret/environment configuration.
+
+The Selar webhook fails closed if the product ID is missing or does not match the verified transaction. The backend also refuses to grant an entitlement when Firestore is unavailable.
+
 ## Deployment Options
 
 This backend is designed as an Express.js server, but it can be easily adapted. Recommended deployment methods:

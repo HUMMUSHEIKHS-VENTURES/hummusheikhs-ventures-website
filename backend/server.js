@@ -10,6 +10,16 @@ app.use(express.json());
 
 // Serve static HTML files from the root directory
 const path = require('path');
+const ADMIN_EMAIL = (process.env.TRUEPROFIT_ADMIN_EMAIL || 'hummuahmad@gmail.com').trim().toLowerCase();
+const LEGACY_TRUEPROFIT_PATH = '/trueprofit_original.html';
+
+// Never expose the legacy inline engine through the backend's static server.
+app.use((req, res, next) => {
+    if (req.path === LEGACY_TRUEPROFIT_PATH) {
+        return res.status(404).send('Not found');
+    }
+    next();
+});
 app.use(express.static(path.join(__dirname, '..')));
 
 
@@ -228,12 +238,12 @@ app.get('/api/engine.js', async (req, res) => {
         const decodedToken = await admin.auth().verifyIdToken(idToken);
         const email = decodedToken.email;
         
-        if (!email) {
+        if (!email || decodedToken.email_verified !== true) {
             return res.status(403).send('/* Forbidden: User has no email */');
         }
 
         // Verify Entitlement in Firestore
-        if (email !== 'hummuahmad@gmail.com') {
+        if (email.toLowerCase() !== ADMIN_EMAIL) {
             if (!db) return res.status(500).send('/* Server Error: Database not configured. */');
             const entitlementRef = db.collection('entitlements').doc(email);
             const docSnap = await entitlementRef.get();
@@ -295,28 +305,50 @@ app.post('/webhooks/selar', async (req, res) => {
         }
 
         // 2. CHECK PRODUCT MATCH
-        // We need to ensure the user actually bought TRUEPROFIT, not a different product.
-        const expectedProductId = process.env.SELAR_TRUEPROFIT_PRODUCT_ID; // e.g. "m9g" from the URL 28o4b14m9g
-        // Depending on Selar's response format, we verify the product code
-        // Skipping exact product ID check in this pseudo-code, but it MUST be implemented in production.
+        const expectedProductId = String(process.env.SELAR_TRUEPROFIT_PRODUCT_ID || '').trim();
+        if (!expectedProductId) {
+            console.error("Missing SELAR_TRUEPROFIT_PRODUCT_ID.");
+            return res.status(503).send('Product verification is not configured');
+        }
+        const productIds = [
+            transaction.product_id,
+            transaction.productId,
+            transaction.product?.id,
+            transaction.product?.product_id,
+            transaction.product?.productId,
+            transaction.product?.code,
+            transaction.data?.product_id,
+            transaction.data?.productId,
+            transaction.data?.product?.id,
+            transaction.data?.product?.product_id,
+            transaction.data?.product?.code,
+        ].filter(value => value !== undefined && value !== null)
+            .map(value => String(value).trim());
+        if (!productIds.includes(expectedProductId)) {
+            console.warn(`Transaction ${reference} is for an unapproved product.`);
+            return res.status(403).send('Transaction product is not TRUEPROFIT');
+        }
 
-        const customerEmail = transaction.customer.email.toLowerCase();
+        const customerEmail = String(transaction.customer?.email || '').trim().toLowerCase();
+        if (!customerEmail) {
+            return res.status(400).send('Missing customer email');
+        }
 
         // 3. CREATE/UPDATE ENTITLEMENT IN FIRESTORE
-        if (db) {
-            const entitlementRef = db.collection('entitlements').doc(customerEmail);
-            await entitlementRef.set({
-                email: customerEmail,
-                active: true,
-                orderId: reference,
-                purchaseDate: admin.firestore.FieldValue.serverTimestamp(),
-                product: 'TRUEPROFIT',
-            }, { merge: true }); // Idempotent update
-            
-            console.log(`Entitlement granted to ${customerEmail} for transaction ${reference}`);
-        } else {
+        if (!db) {
             console.error("Database not initialized, cannot save entitlement.");
+            return res.status(503).send('Authorization database is not configured');
         }
+        const entitlementRef = db.collection('entitlements').doc(customerEmail);
+        await entitlementRef.set({
+            email: customerEmail,
+            active: true,
+            orderId: reference,
+            purchaseDate: admin.firestore.FieldValue.serverTimestamp(),
+            product: 'TRUEPROFIT',
+        }, { merge: true }); // Idempotent update
+        
+        console.log(`Entitlement granted to ${customerEmail} for transaction ${reference}`);
 
         res.status(200).send('Webhook processed successfully');
     } catch (error) {
