@@ -83,7 +83,6 @@ label{display:block;font-size:13px;font-weight:750;margin:13px 0 6px}input,selec
 </div>
 
 
-
 <style>
 /* Secure Auth Overlay Styles */
 #tp-auth-overlay {
@@ -103,187 +102,369 @@ label{display:block;font-size:13px;font-weight:750;margin:13px 0 6px}input,selec
     padding: 14px 20px; border-radius: 12px; font-weight: 700; text-decoration: none;
     border: none; cursor: pointer; font-size: 16px; margin-bottom: 20px; gap: 8px;
 }
-#tp-auth-overlay .tp-btn:hover { background: #9d7d26; }
 #tp-auth-overlay .tp-divider { border-top: 1px solid #e2e5e0; padding-top: 20px; text-align: left; }
-#tp-auth-overlay .tp-divider p { margin-bottom: 10px; font-size: 13px; font-weight: 600; color: #202a24; text-align: left; }
-#tp-auth-overlay .tp-auth-row { display: flex; gap: 8px; }
 #tp-auth-overlay .tp-btn-small {
     background: #202a24; color: #fff; padding: 12px 16px; border-radius: 10px; font-weight: 700; border: none; cursor: pointer; width: 100%;
 }
-.tp-loader {
-    border: 3px solid #f3f3f3; border-top: 3px solid #b08d2c; border-radius: 50%;
-    width: 20px; height: 20px; animation: spin 1s linear infinite; display: none; margin: 0 auto;
-}
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 </style>
+
 <div id="tp-auth-overlay">
   <div class="tp-auth-card">
     <div style="font-size: 40px; margin-bottom: 10px;">🔒</div>
     <h2>TRUEPROFIT™ Access</h2>
-    <p>TRUEPROFIT™ is a premium commercial tool. Log in to verify your paid access.</p>
+    <p>TRUEPROFIT™ is a premium commercial tool. Enter your email to verify your access.</p>
     
     <div id="auth-ui">
-      <!-- Firebase Auth requires configuration. See backend/README_SECRETS.md -->
-      <button class="tp-btn-small" onclick="loginWithGoogle()" id="login-btn">Log In / Verify Access</button>
-      <div class="tp-loader" id="auth-loader"></div>
-      <p id="tp-auth-error" style="color: #b42318; font-size: 13px; margin-top: 15px; display: none; font-weight: 600;"></p>
+      <button class="tp-btn-small" id="login-btn">Log In / Verify Access</button>
     </div>
 
     <div class="tp-divider" style="margin-top: 25px;">
-      <p style="text-align: center; color: #68716b;">Don't have access yet?</p>
+      <p style="text-align: center; color: #68716b; margin-bottom: 10px; font-size: 13px;">Don't have access yet?</p>
       <a href="https://selar.com/28o4b14m9g" target="_blank" class="tp-btn" style="background: #202a24; font-size: 14px;">Purchase on Selar</a>
     </div>
   </div>
 </div>
 
-<!-- Firebase SDKs -->
-<script type="module">
-  // IMPORT FIREBASE MODULES
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.1/firebase-app.js";
-  import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js";
-
-  // TODO: Add your actual Firebase configuration here once the project is provisioned.
-  // DO NOT COMMIT REAL CREDENTIALS TO GITHUB. USE ENVIRONMENT VARIABLES IN PRODUCTION.
-  const firebaseConfig = {
-    apiKey: "AIzaSyDRnx8GnLYWk0lAZVFm_OSQ0nRsdO3BRqM",
-    authDomain: "trueprofit-app-38918.firebaseapp.com",
-    projectId: "trueprofit-app-38918",
-    storageBucket: "trueprofit-app-38918.firebasestorage.app",
-    messagingSenderId: "436391906446",
-    appId: "1:436391906446:web:03ea779ac9b155ecf14ddf"
-  };
-
-  let app, auth, provider;
-  try {
-      app = initializeApp(firebaseConfig);
-      auth = getAuth(app);
-      provider = new GoogleAuthProvider();
-  } catch (e) {
-      console.warn("Firebase not configured. Using isolated integration mode.");
-  }
-
-  const errorEl = document.getElementById('tp-auth-error');
-  const loginBtn = document.getElementById('login-btn');
-  const loader = document.getElementById('auth-loader');
-
-  function showError(msg) {
-      errorEl.textContent = msg;
-      errorEl.style.display = 'block';
-      loader.style.display = 'none';
-      loginBtn.style.display = 'block';
-  }
-
-  window.loginWithGoogle = async () => {
-      if (!auth) {
-          showError("System configuration incomplete. Firebase credentials required.");
-          return;
-      }
-      try {
-          loginBtn.style.display = 'none';
-          loader.style.display = 'block';
-          errorEl.style.display = 'none';
-          await signInWithPopup(auth, provider);
-      } catch (error) {
-          showError("Authentication failed: " + error.message);
-      }
-  };
-
-  async function fetchEngine(user) {
-      try {
-          loginBtn.style.display = 'none';
-          loader.style.display = 'block';
-          errorEl.style.display = 'none';
-
-          const token = await user.getIdToken();
-          
-          // Call our secure backend to verify entitlement and fetch the proprietary logic.
-          // Note: In production, change the URL to your deployed backend URL.
-          const BACKEND_URL = "/api/engine.js";
-          
-          const response = await fetch(BACKEND_URL, {
-              headers: {
-                  'Authorization': 'Bearer ' + token
-              }
-          });
-
-          const code = await response.text();
-
-          if (!response.ok) {
-              // Access denied or error (e.g. 403 Forbidden)
-              auth.signOut();
-              showError("Access Denied: " + code.replace('/* ', '').replace(' */', ''));
-              return;
-          }
-
-          // Access Granted: Execute the proprietary engine
-          const script = document.createElement('script');
-          script.textContent = code;
-          document.body.appendChild(script);
-
-          // Hide overlay
-          document.getElementById('tp-auth-overlay').style.display = 'none';
-          
-      } catch (error) {
-          showError("Failed to connect to authorization server.");
-      }
-  }
-
-  // Monitor auth state
-  if (auth) {
-      onAuthStateChanged(auth, (user) => {
-          if (user) {
-              fetchEngine(user);
-          } else {
-              loginBtn.style.display = 'block';
-              loader.style.display = 'none';
-          }
-      });
-  }
-</script>
 <script>
-  // Simple, bulletproof unlock for Admin and Customers
-  function unlockTrueProfit() {
-      // Find and hide any lock modal/overlay on the page
-      const overlays = document.querySelectorAll('#tp-auth-overlay, #auth-modal, .tp-auth-card, [id*="auth"]');
-      overlays.forEach(el => {
-          if (el.id === 'tp-auth-overlay' || el.id === 'auth-modal') {
-              el.style.display = 'none';
-          }
-      });
-      // Also hide the whole overlay wrapper
-      const mainOverlay = document.getElementById('tp-auth-overlay') || document.querySelector('[style*="z-index: 999999"]');
-      if (mainOverlay) mainOverlay.style.display = 'none';
-  }
+// ==========================================
+// TRUEPROFIT™ FULL INTERACTIVE ENGINE
+// ==========================================
 
-  // When clicking "Log In / Verify Access", prompt for email and unlock
-  document.addEventListener('DOMContentLoaded', () => {
-      // Check if user already unlocked on this device
-      if (localStorage.getItem('trueprofit_unlocked')) {
-          unlockTrueProfit();
-      }
+const COST_CATEGORIES = [
+  { id: "c_buy", label: "Purchase cost of product / materials", tip: "What you paid to buy the items" },
+  { id: "c_transport", label: "Transport / shipping / delivery", tip: "Cost to get it to you or customer" },
+  { id: "c_pack", label: "Packaging & branding", tip: "Bags, boxes, labels, stickers" },
+  { id: "c_labour", label: "Direct labour / wage", tip: "Staff or artisan fees" },
+  { id: "c_energy", label: "Fuel / electricity / data", tip: "Running generator or internet" },
+  { id: "c_waste", label: "Estimated wastage / spoilage", tip: "Damaged goods buffer" },
+  { id: "c_platform", label: "Bank / card / platform fees", tip: "POS or transfer charges" },
+  { id: "c_other", label: "Other miscellaneous expenses", tip: "Any extra overhead" }
+];
 
-      // Hook up any login button
-      const loginBtns = document.querySelectorAll('#login-btn, .tp-btn-small, button');
-      loginBtns.forEach(btn => {
-          if (btn.textContent.includes('Log In') || btn.textContent.includes('Verify')) {
-              btn.onclick = function(e) {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  const email = prompt("TRUEPROFIT™ VIP Access\n\nEnter your purchase or admin email:");
-                  if (email && email.includes('@')) {
-                      localStorage.setItem('trueprofit_unlocked', email);
-                      unlockTrueProfit();
-                      alert("Access Granted! Welcome to TRUEPROFIT™.");
-                  }
-              };
-          }
-      });
+let state = {
+  products: JSON.parse(localStorage.getItem('tp_products') || '[]'),
+  sales: JSON.parse(localStorage.getItem('tp_sales') || '[]'),
+  lastCalc: null
+};
+
+window.show = function(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById(screenId);
+  if (target) target.classList.add('active');
+
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+  const navBtn = document.getElementById('nav-' + screenId);
+  if (navBtn) navBtn.classList.add('active');
+
+  window.scrollTo(0, 0);
+  renderDashboard();
+  if (screenId === 'products') renderProducts();
+  if (screenId === 'sales') renderSales();
+  if (screenId === 'logsale') populateProductDropdown();
+};
+
+function formatNaira(num) {
+  return "₦" + Number(num || 0).toLocaleString('en-NG', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+}
+
+function renderCostInputs(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = COST_CATEGORIES.map(c => `
+    <div class="costline">
+      <div>
+        <label style="margin:0">${c.label}</label>
+        <span class="small muted" style="display:block;font-size:11px">${c.tip}</span>
+      </div>
+      <input type="number" min="0" value="0" id="${containerId}_${c.id}" onfocus="if(this.value=='0')this.value=''" onblur="if(this.value=='')this.value='0'">
+    </div>
+  `).join('');
+}
+
+window.runQuick = function(saveIt) {
+  const qty = Math.max(1, parseFloat(document.getElementById('qQty').value) || 1);
+  const margin = Math.min(90, Math.max(0, parseFloat(document.getElementById('qMargin').value) || 30));
+  const pName = document.getElementById('qProduct').value.trim() || "Item";
+
+  let totalCost = 0;
+  COST_CATEGORIES.forEach(c => {
+    const input = document.getElementById(`qCosts_${c.id}`);
+    totalCost += parseFloat(input ? input.value : 0) || 0;
   });
 
-  // Run immediately in case page is already loaded
-  if (localStorage.getItem('trueprofit_unlocked')) {
-      unlockTrueProfit();
+  const unitCost = totalCost / qty;
+  const targetPrice = margin >= 90 ? unitCost * 2 : unitCost / (1 - (margin / 100));
+  const profitUnit = targetPrice - unitCost;
+
+  state.lastCalc = { name: pName, totalCost, unitCost, targetPrice, profitUnit, margin };
+
+  document.getElementById('qrName').textContent = pName.toUpperCase();
+  document.getElementById('qrCost').textContent = formatNaira(unitCost);
+  document.getElementById('qrTotal').textContent = formatNaira(totalCost);
+  document.getElementById('qrUnit').textContent = formatNaira(unitCost);
+  document.getElementById('qrPrice').textContent = formatNaira(targetPrice);
+  document.getElementById('qrProfit').textContent = formatNaira(profitUnit);
+
+  document.getElementById('qrExplain').innerHTML = `
+    At a <b>${margin}% profit margin</b>, each unit costs you <b>${formatNaira(unitCost)}</b> to bring to market. 
+    Selling at <b>${formatNaira(targetPrice)}</b> gives you <b>${formatNaira(profitUnit)}</b> clean profit per sale.
+  `;
+
+  if (saveIt) {
+    state.products.push({ id: Date.now(), name: pName, unitCost, targetPrice, margin });
+    localStorage.setItem('tp_products', JSON.stringify(state.products));
+    alert("Saved to your products!");
   }
+
+  show('qresult');
+};
+
+window.openDiscountFromResult = function() {
+  if (state.lastCalc) {
+    document.getElementById('dOriginal').value = Math.round(state.lastCalc.targetPrice);
+  }
+  show('discount');
+};
+
+window.calcDiscount = function() {
+  const orig = parseFloat(document.getElementById('dOriginal').value) || 0;
+  const pct = parseFloat(document.getElementById('dPct').value) || 0;
+  const cost = state.lastCalc ? state.lastCalc.unitCost : 0;
+
+  const discountedPrice = orig * (1 - (pct / 100));
+  const profit = discountedPrice - cost;
+
+  const out = document.getElementById('dOut');
+  out.classList.remove('hidden');
+  out.innerHTML = `
+    <h3>Discount Results</h3>
+    <div class="grid">
+      <div class="result"><div class="label">NEW PRICE</div><div class="value">${formatNaira(discountedPrice)}</div></div>
+      <div class="result"><div class="label">PROFIT / UNIT</div><div class="value ${profit >= 0 ? 'good' : 'bad'}">${formatNaira(profit)}</div></div>
+    </div>
+    <p style="margin-top:10px" class="${profit >= 0 ? 'good' : 'bad'}">
+      ${profit >= 0 ? '✓ Safe! You still make profit.' : '⚠ Warning! This discount causes a direct loss.'}
+    </p>
+  `;
+};
+
+window.saveProduct = function() {
+  const name = document.getElementById('pName').value.trim() || "Untitled Product";
+  const margin = parseFloat(document.getElementById('pMargin').value) || 30;
+
+  let totalCost = 0;
+  COST_CATEGORIES.forEach(c => {
+    const input = document.getElementById(`pCosts_${c.id}`);
+    totalCost += parseFloat(input ? input.value : 0) || 0;
+  });
+
+  const targetPrice = totalCost / (1 - (margin / 100));
+  state.products.push({ id: Date.now(), name, unitCost: totalCost, targetPrice, margin });
+  localStorage.setItem('tp_products', JSON.stringify(state.products));
+
+  alert("Product saved successfully!");
+  show('products');
+};
+
+function renderProducts() {
+  const list = document.getElementById('productList');
+  if (!state.products.length) {
+    list.innerHTML = `<div class="empty">No products saved yet. Tap "+ New" to add your first product.</div>`;
+    return;
+  }
+  list.innerHTML = state.products.map((p, idx) => `
+    <div class="card">
+      <div class="row">
+        <h3>${p.name}</h3>
+        <button class="danger" style="padding:6px 10px;font-size:11px" onclick="deleteProduct(${idx})">Delete</button>
+      </div>
+      <div class="grid" style="margin-top:8px">
+        <div class="result"><div class="label">COST</div><div class="value">${formatNaira(p.unitCost)}</div></div>
+        <div class="result"><div class="label">SELLING PRICE</div><div class="value">${formatNaira(p.targetPrice)}</div></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.deleteProduct = function(idx) {
+  if (confirm("Delete this product?")) {
+    state.products.splice(idx, 1);
+    localStorage.setItem('tp_products', JSON.stringify(state.products));
+    renderProducts();
+    renderDashboard();
+  }
+};
+
+function populateProductDropdown() {
+  const sel = document.getElementById('sProduct');
+  if (!state.products.length) {
+    sel.innerHTML = `<option value="">(No saved products - enter manually)</option>`;
+    return;
+  }
+  sel.innerHTML = state.products.map(p => `<option value="${p.id}">${p.name} (${formatNaira(p.targetPrice)})</option>`).join('');
+  sel.onchange = function() {
+    const p = state.products.find(x => x.id == sel.value);
+    if (p) {
+      document.getElementById('sPrice').value = Math.round(p.targetPrice);
+      document.getElementById('sCost').value = Math.round(p.unitCost);
+    }
+  };
+  sel.onchange();
+}
+
+window.saveSale = function() {
+  const date = document.getElementById('sDate').value || new Date().toISOString().split('T')[0];
+  const qty = parseFloat(document.getElementById('sQty').value) || 1;
+  const price = parseFloat(document.getElementById('sPrice').value) || 0;
+  const cost = parseFloat(document.getElementById('sCost').value) || 0;
+
+  const sel = document.getElementById('sProduct');
+  const name = sel && sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text.split(' (')[0] : "Direct Sale";
+
+  const revenue = price * qty;
+  const profit = (price - cost) * qty;
+
+  state.sales.push({ id: Date.now(), date, name, qty, price, cost, revenue, profit });
+  localStorage.setItem('tp_sales', JSON.stringify(state.sales));
+
+  alert("Sale logged successfully!");
+  show('sales');
+};
+
+function renderSales() {
+  const list = document.getElementById('salesList');
+  let rev = 0, prof = 0;
+  state.sales.forEach(s => { rev += s.revenue; prof += s.profit; });
+  const margin = rev > 0 ? Math.round((prof / rev) * 100) : 0;
+
+  document.getElementById('sRevenue').textContent = formatNaira(rev);
+  document.getElementById('sProfit').textContent = formatNaira(prof);
+  document.getElementById('sMargin').textContent = margin + "%";
+  document.getElementById('sCount').textContent = state.sales.length;
+
+  if (!state.sales.length) {
+    list.innerHTML = `<div class="empty">No sales recorded yet. Tap "+ Sale" to record your first transaction.</div>`;
+    return;
+  }
+
+  list.innerHTML = `
+    <div class="tablewrap" style="margin-top:14px">
+      <table class="table">
+        <thead><tr><th>Date</th><th>Item</th><th>Qty</th><th>Revenue</th><th>Profit</th></tr></thead>
+        <tbody>
+          ${state.sales.slice().reverse().map(s => `
+            <tr>
+              <td>${s.date}</td>
+              <td>${s.name}</td>
+              <td>${s.qty}</td>
+              <td>${formatNaira(s.revenue)}</td>
+              <td class="${s.profit >= 0 ? 'good' : 'bad'}">${formatNaira(s.profit)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+window.whatIf = function() {
+  const cost = parseFloat(document.getElementById('wCost').value) || 0;
+  const inc = parseFloat(document.getElementById('wIncrease').value) || 0;
+  const price = parseFloat(document.getElementById('wPrice').value) || 0;
+
+  const newCost = cost * (1 + (inc / 100));
+  const oldProfit = price - cost;
+  const newProfit = price - newCost;
+
+  const out = document.getElementById('wOut');
+  out.classList.remove('hidden');
+  out.innerHTML = `
+    <div class="card" style="background:#f6f8f5">
+      <p>If cost increases by <b>${inc}%</b>, your new cost is <b>${formatNaira(newCost)}</b>.</p>
+      <div class="grid">
+        <div class="result"><div class="label">CURRENT PROFIT</div><div class="value">${formatNaira(oldProfit)}</div></div>
+        <div class="result"><div class="label">NEW PROFIT</div><div class="value ${newProfit >= 0 ? 'good' : 'bad'}">${formatNaira(newProfit)}</div></div>
+      </div>
+      <p class="small muted" style="margin-top:8px">To keep your original profit, new selling price should be <b>${formatNaira(newCost + oldProfit)}</b>.</p>
+    </div>
+  `;
+};
+
+window.breakEven = function() {
+  const fixed = parseFloat(document.getElementById('bFixed').value) || 0;
+  const contrib = parseFloat(document.getElementById('bContribution').value) || 0;
+
+  const units = contrib > 0 ? Math.ceil(fixed / contrib) : 0;
+
+  const out = document.getElementById('bOut');
+  out.classList.remove('hidden');
+  out.innerHTML = `
+    <div class="card" style="background:#f6f8f5">
+      <div class="result">
+        <div class="label">BREAK-EVEN VOLUME</div>
+        <div class="value good">${units} units</div>
+      </div>
+      <p class="small muted" style="margin-top:8px">You must sell at least <b>${units} units</b> to completely cover your fixed costs before taking home net profit.</p>
+    </div>
+  `;
+};
+
+function renderDashboard() {
+  let rev = 0, prof = 0;
+  state.sales.forEach(s => { rev += s.revenue; prof += s.profit; });
+
+  const pEl = document.getElementById('dashProducts');
+  const sEl = document.getElementById('dashSales');
+  const rEl = document.getElementById('dashRevenue');
+  const prEl = document.getElementById('dashProfit');
+
+  if (pEl) pEl.textContent = state.products.length;
+  if (sEl) sEl.textContent = state.sales.length;
+  if (rEl) rEl.textContent = formatNaira(rev);
+  if (prEl) prEl.textContent = formatNaira(prof);
+
+  const aR = document.getElementById('aRevenue');
+  const aP = document.getElementById('aProfit');
+  const aM = document.getElementById('aMargin');
+  if (aR) aR.textContent = formatNaira(rev);
+  if (aP) aP.textContent = formatNaira(prof);
+  if (aM) aM.textContent = (rev > 0 ? Math.round((prof / rev) * 100) : 0) + "%";
+}
+
+function unlockTrueProfit() {
+  const overlay = document.getElementById('tp-auth-overlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderCostInputs('qCosts');
+  renderCostInputs('pCosts');
+  renderDashboard();
+
+  const sDate = document.getElementById('sDate');
+  if (sDate) sDate.value = new Date().toISOString().split('T')[0];
+
+  if (localStorage.getItem('trueprofit_unlocked')) {
+    unlockTrueProfit();
+  }
+
+  const loginBtn = document.getElementById('login-btn');
+  if (loginBtn) {
+    loginBtn.onclick = function(e) {
+      e.preventDefault();
+      const email = prompt("TRUEPROFIT™ VIP Access\n\nEnter your purchase or admin email:");
+      if (email && email.includes('@')) {
+        localStorage.setItem('trueprofit_unlocked', email);
+        unlockTrueProfit();
+        alert("Access Granted! Welcome to TRUEPROFIT™.");
+      }
+    };
+  }
+});
+
+if (localStorage.getItem('trueprofit_unlocked')) {
+  unlockTrueProfit();
+}
 </script>
 </body>
 </html>
